@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const mongoose = require('mongoose');
 const workoutRoutes = require('./routes/workouts');
 
 
@@ -17,9 +18,15 @@ app.use((req,res,next)=> {
 // Create a route for the app
 app.use('/api/workouts', workoutRoutes);
 
-//listen to port 4000
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+    //listen to port 4000
+    app.listen(process.env.PORT, () => {
+        console.log('Connected to DB & Server is running on port 4000');
+    });
+})
+.catch((err) => {
+    console.error(err);
+});
 
-app.listen(process.env.PORT, () => {
-    console.log('Server is running on port 4000');
-    }
-);
