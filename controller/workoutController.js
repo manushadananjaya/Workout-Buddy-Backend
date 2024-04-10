@@ -43,7 +43,7 @@ const createWorkout = async (req, res) => {
         res.status(200).json({workout});
     }
     catch(err){
-        res.status(400).json({message: err.message});
+        res.status(400).json({error: err.message});
     }
 }
 
@@ -64,7 +64,7 @@ const updateWorkout = async (req, res) => {
         res.status(200).json({message: 'Workout updated successfully'});
     }
     catch(err){
-        res.status(400).json({message: err.message});
+        res.status(400).json({error: err.message});
     }
 }
 
@@ -87,7 +87,7 @@ const deleteWorkout = async (req, res) => {
 
     }
     catch(err){
-        res.status(400).json({message: err.message});
+        res.status(400).json({error: err.message});
     }
 }
 
