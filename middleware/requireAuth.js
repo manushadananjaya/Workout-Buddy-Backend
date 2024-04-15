@@ -11,11 +11,11 @@ const requireAuth = async(req, res, next) => {
         return res.status(401).send('Authorization token required');
     }
 
-    const token = authorization.replace('Bearer ', '');
+    const AccessToken = authorization.replace('Bearer ', '');
 
     //verify the token
     try{
-        const {_id} = jwt.verify(token,process.env.JWT_SECRET)
+        const {_id} = jwt.verify(AccessToken,process.env.JWT_SECRET)
         req.user = await User.findById({_id}).select(_id);
         next();
     }
