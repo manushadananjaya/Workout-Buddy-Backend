@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const e = require('express');
 
 const requireAuth = async(req, res, next) => {
 
@@ -15,13 +16,18 @@ const requireAuth = async(req, res, next) => {
 
     //verify the token
     try{
-        const {_id} = jwt.verify(AccessToken,process.env.JWT_SECRET)
+        const {_id} = jwt.verify(AccessToken,process.env.ACCESS_SECRET)
         req.user = await User.findById({_id}).select(_id);
         next();
     }
-    catch(err){
-        console.log(err);
-        return res.status(401).send('Request not authorized');
+    catch (err) {
+        console.error(err.message);
+
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token expired' });
+        }
+
+        return res.status(401).json({ error: 'Invalid token' });
     }
 
 
