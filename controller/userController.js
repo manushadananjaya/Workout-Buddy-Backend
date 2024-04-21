@@ -2,12 +2,12 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
 const createAccessToken = (_id) => {
-  return jwt.sign({ _id: _id }, process.env.ACCESS_SECRET, { expiresIn: "5s" });
+  return jwt.sign({ _id: _id }, process.env.ACCESS_SECRET, { expiresIn: "5m" });
 };
 
 //create refresh token
 const createRefreshToken = (_id) => {
-  return jwt.sign({ _id: _id }, process.env.REFRESH_SECRET, { expiresIn: "60s" });
+  return jwt.sign({ _id: _id }, process.env.REFRESH_SECRET, { expiresIn: "10m" });
 };
 
 //login user
