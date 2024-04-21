@@ -2,12 +2,12 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
 const createAccessToken = (_id) => {
-  return jwt.sign({ _id: _id }, process.env.ACCESS_SECRET, { expiresIn: "5m" });
+  return jwt.sign({ _id: _id }, process.env.ACCESS_SECRET, { expiresIn: "10m" });
 };
 
 //create refresh token
 const createRefreshToken = (_id) => {
-  return jwt.sign({ _id: _id }, process.env.REFRESH_SECRET, { expiresIn: "10m" });
+  return jwt.sign({ _id: _id }, process.env.REFRESH_SECRET, { expiresIn: "30m" });
 };
 
 //login user
@@ -20,6 +20,8 @@ const loginUser = async (req, res) => {
         //create token
         const AccessToken = createAccessToken(user._id);
         const RefreshToken = createRefreshToken(user._id);
+        
+        User.findOneAndUpdate({ email: email }, { refreshToken: RefreshToken }, { new: true });
     
         res.status(200).json({ email, AccessToken , RefreshToken});
     } catch (error) {
@@ -37,6 +39,8 @@ const signupUser = async (req, res) => {
     const AccessToken = createAccessToken(user._id);
     const RefreshToken = createRefreshToken(user._id);
 
+    User.findOneAndUpdate({ email: email }, { refreshToken: RefreshToken }, { new: true })
+
     res.status(200).json({ email, AccessToken , RefreshToken });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -50,6 +54,13 @@ const refreshUser = async (req, res) => {
   if (!RefreshToken) {
     return res.status(401).send("Refresh token required");
   }
+
+  // if(!RefreshToken=== User.findOne({RefreshToken})){
+  //   return res.status(401).send("Invalid refresh token");
+  // }
+
+
+  
 
   try {
     const { _id } = jwt.verify(RefreshToken, process.env.REFRESH_SECRET);
